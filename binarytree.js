@@ -85,19 +85,77 @@ function isBinarySearchTree(node, min = Number.MIN_SAFE_INTEGER, max = Number.MA
     );
 }
 
+function findShortestPath(root, target) {
+    // Check if the root node is null, return null if it is.
+    if (!root) {
+      return null;
+    }
+  
+    // Initialize a queue with the root node and a path containing only the root.
+    const queue = [{ node: root, path: [root] }];
+  
+    // Begin a loop to explore nodes and paths in the tree.
+    while (queue.length > 0) {
+      // Dequeue the first element in the queue, which includes the current node and its path.
+      const { node, path } = queue.shift();
+  
+      // Check if the value of the current node matches the target value.
+      if (node.value === target) {
+        // If a match is found, return the path leading to the target node.
+        return path;
+      }
+  
+      // If the current node has a left child, create a new path with the left child and enqueue it.
+      if (node.left) {
+        const newPath = [...path, node.left]; // Create a new path by appending the left child.
+        queue.push({ node: node.left, path: newPath }); // Enqueue the left child and its path.
+      }
+  
+      // If the current node has a right child, create a new path with the right child and enqueue it.
+      if (node.right) {
+        const newPath = [...path, node.right]; // Create a new path by appending the right child.
+        queue.push({ node: node.right, path: newPath }); // Enqueue the right child and its path.
+      }
+    }
+  
+    // If the target value is not found in the tree, return null.
+    return null;
+}
+
 const tree = new BinaryTree(1, 'AB')
-tree.insert(1, 11, 'AC')
-tree.insert(1, 12, 'BC')
-tree.insert(12, 121, 'BG', { right: true })
+// tree.insert(1, 11, 'AC')
+// tree.insert(1, 12, 'BC')
+// tree.insert(12, 121, 'BG', { right: true })
 
-console.log([...tree.preOrderTraversal()].map(x => x.value));
-console.log([...tree.inOrderTraversal()].map(x => x.value));
-console.log([...tree.postOrderTraversal()].map(x => x.value));
+// console.log([...tree.preOrderTraversal()].map(x => x.value));
+// console.log([...tree.inOrderTraversal()].map(x => x.value));
+// console.log([...tree.postOrderTraversal()].map(x => x.value));
 
-console.log(tree.root.value);
-console.log(tree.find(12));
-console.log(tree.find(121));
-console.log(tree.find(10));
+// console.log(tree.root.value);
+// console.log(tree.find(12));
+// console.log(tree.find(121));
+// console.log(tree.find(10));
 
-const isBST = isBinarySearchTree(tree.root)
+const bst = new BinaryTree(50)
+
+bst.insert(50, 30); 
+bst.insert(50, 70);
+bst.insert(30, 20);
+bst.insert(30, 40);
+bst.insert(70, 60); 
+bst.insert(70, 80);
+
+const isBST = isBinarySearchTree(bst.root)
 console.log(isBST);
+
+const targetValue = 40
+const shortestPath = findShortestPath(bst.root, targetValue)
+
+if (shortestPath) {
+  console.log(`Кратчайший путь до узла ${targetValue}:`);
+  shortestPath.forEach(node => {
+    console.log(node.value);
+  });
+} else {
+  console.log(`Узел ${targetValue} не найден в дереве.`);
+}
